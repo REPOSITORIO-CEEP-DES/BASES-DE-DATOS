@@ -1,0 +1,3 @@
+# BASES-DE-DATOS
+COORDINACION DE ESTUDIOS, EVALUACION Y POLITICAS DE LA DIRECCION DE EDUCACION SECUNDARIA
+Este repositorio contiene en carpetas respectivas, las bases de datos organizadas de: Jornada Escolar Completa (01_PADRON_JEC), Secundaria con Alternancia (02_CRFA), Secundaria con Formación Técnica (03_SFT), Secundaria con Residencia Estudiantil (04_SEC_RESIDENCIA), Secundaria Tutorial (05_SEC_TUTORIAL), Expresarte (06_EXPRESARTE), Orquestando (07_ORQUESTANDO), Talleres Deportivo-Recreativos (08_TALLERES_DPTVOS), Padron WEB Escale de Secundaria (09_PADRON_WEB_ESCALE) y Perfiles CAS de Secundaria (10_PERFILES_INTERV), que se pone a disposición del Equipo Técnico de la Coordinación de Estudios, Evaluación y Políticas de la Dirección de Educación Secundaria.
