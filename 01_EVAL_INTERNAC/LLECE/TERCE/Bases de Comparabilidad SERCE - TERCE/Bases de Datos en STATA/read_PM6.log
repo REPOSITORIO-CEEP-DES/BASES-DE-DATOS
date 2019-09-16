@@ -1,0 +1,545 @@
+-------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\Adriana\Desktop\Bases4dic\Basescomparar\read_PM6.log
+  log type:  text
+ opened on:  26 Nov 2014, 22:45:44
+
+. use PM6.dta, clear
+
+. 
+. **************************************************************************************************
+. ***************************************** BDD SERCE -TERCE ***************************************
+. **************************************************************************************************
+. 
+. /* Fecha de entrega: 26 de noviembre de 2014 
+> 
+> **************************************************************************************************
+> **************************************************************************************************/
+. **************************** BASE DE DATOS LENGUAJE TERCER GRADO**********************************
+. 
+. ** Verificación: sólo el archivo del país
+. 
+. 
+. **Para cambiar las variables de mayuscula a minuscula pero con nombres de variables combinadas 
+. foreach v of varlist _all  {
+  2.       local lowname=lower("`v'")
+  3.       capture rename `v' `lowname'
+  4. }
+
+. 
+.         
+.         tab idcntry
+
+    idcntry |      Freq.     Percent        Cum.
+------------+-----------------------------------
+         32 |      2,941        5.92        5.92
+         76 |      2,520        5.08       11.00
+        152 |      3,982        8.02       19.02
+        170 |      3,623        7.30       26.31
+        188 |      3,000        6.04       32.36
+        214 |      2,743        5.52       37.88
+        218 |      3,989        8.03       45.91
+        320 |      3,306        6.66       52.57
+        340 |      3,064        6.17       58.74
+        484 |      2,965        5.97       64.71
+        558 |      2,921        5.88       70.60
+        591 |      2,624        5.28       75.88
+        600 |      2,470        4.97       80.85
+        604 |      3,757        7.57       88.42
+        858 |      2,265        4.56       92.98
+       4841 |      3,485        7.02      100.00
+------------+-----------------------------------
+      Total |     49,655      100.00
+
+.         
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+.         rename  pais country
+
+.         tostring  idstud, replace
+idstud was long now str8
+
+.         gen idclass= substr(idstud, 1, 6)
+
+.         rename estrato idstrat
+
+.         rename nina genero
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+.         rename  hab_eqserce_mat hab_eqserce_mat6
+
+.         rename  ptje_eqserce_mat  ptje_eqserce_mat6
+
+.         rename nivel nivel_mat6
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+.         
+.         tab country
+
+    country |      Freq.     Percent        Cum.
+------------+-----------------------------------
+        ARG |      2,941        5.92        5.92
+        BRA |      2,520        5.08       11.00
+        CHI |      3,982        8.02       19.02
+        COL |      3,623        7.30       26.31
+        CRI |      3,000        6.04       32.36
+        ECU |      3,989        8.03       40.39
+        GUA |      3,306        6.66       47.05
+        HON |      3,064        6.17       53.22
+        MEX |      2,965        5.97       59.19
+        NIC |      2,921        5.88       65.07
+        NVL |      3,485        7.02       72.09
+        PAN |      2,624        5.28       77.37
+        PAR |      2,470        4.97       82.35
+        PER |      3,757        7.57       89.91
+        RDO |      2,743        5.52       95.44
+        URU |      2,265        4.56      100.00
+------------+-----------------------------------
+      Total |     49,655      100.00
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. 
+. ** Se genera el identicador único para manejo en la BDD regional
+.         tostring  idstud, replace
+idstud already string; no replace
+
+.         gen sID= country+ idstud
+
+. 
+. ** Verificar que no existan registros duplicados por estudiante y país
+.         duplicates report sID
+
+Duplicates in terms of sID
+
+--------------------------------------
+   copies | observations       surplus
+----------+---------------------------
+        1 |        49655             0
+--------------------------------------
+
+.         tostring  idschool, replace
+idschool was int now str4
+
+.         gen oID= country+ idschool
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. 
+.         label variable idcntry "Identificador del pais"
+
+.         label variable country "Acronimo usado para el pais"
+
+.         label variable idstud  "ID unico del estudiante"
+
+.         label variable sID "sID único del estudiante con pais"
+
+.         label variable oID "oID acronimo pais mas escuela"
+
+.         label variable idschool "Identificador de la escuela"
+
+.         label variable idclass "Identificador de la clase"
+
+.         label variable idstrat "Identificador del estrato"
+
+.         label variable  w2mat6  "Peso del estudiante para PM6"
+
+.         label variable  ptje_eqserce_mat6 "Puntaje estándar equiparado con SERCE Mat"
+
+.         label variable  hab_eqserce_mat6 "Habilidad equiparada con SERCE Mat"
+
+.         label variable nivel_mat6 "Nivel proyectando puntos de corte SERCE matemáticas"
+
+.         label variable genero "Genero del estudiante"
+
+.         label define genero 1"Nina"0"Nino" 
+
+.         label values genero genero
+
+.         
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. ** Ordenar la base de datos
+. 
+.         order  idcntry country idschool idstrat  oID idclass  idstud sID  ///
+>         genero w2mat6 hab_eqserce_mat6 ptje_eqserce_mat6 nivel_mat6
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. ** Codebook
+. 
+.         codebook  idcntry country idschool idstrat  oID idclass  idstud sID  ///
+>         genero w2mat6 hab_eqserce_mat6 ptje_eqserce_mat6 nivel_mat6
+
+-------------------------------------------------------------------------------------------------------
+idcntry                                                                          Identificador del pais
+-------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (int)
+
+                 range:  [32,4841]                    units:  1
+         unique values:  16                       missing .:  0/49655
+
+                  mean:   660.726
+              std. dev:   1168.27
+
+           percentiles:        10%       25%       50%       75%       90%
+                                76       170       320       591       858
+
+-------------------------------------------------------------------------------------------------------
+country                                                                     Acronimo usado para el pais
+-------------------------------------------------------------------------------------------------------
+
+                  type:  string (str3)
+
+         unique values:  16                       missing "":  0/49655
+
+              examples:  "COL"
+                         "ECU"
+                         "NIC"
+                         "PAR"
+
+-------------------------------------------------------------------------------------------------------
+idschool                                                                    Identificador de la escuela
+-------------------------------------------------------------------------------------------------------
+
+                  type:  string (str4)
+
+         unique values:  585                      missing "":  0/49655
+
+              examples:  "6021"
+                         "6061"
+                         "6111"
+                         "6156"
+
+-------------------------------------------------------------------------------------------------------
+idstrat                                                                       Identificador del estrato
+-------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (byte)
+
+                 range:  [1,15]                       units:  1
+         unique values:  14                       missing .:  0/49655
+
+                  mean:   6.76806
+              std. dev:   2.54452
+
+           percentiles:        10%       25%       50%       75%       90%
+                                 4         5         6         8        10
+
+-------------------------------------------------------------------------------------------------------
+oID                                                                       oID acronimo pais mas escuela
+-------------------------------------------------------------------------------------------------------
+
+                  type:  string (str7)
+
+         unique values:  2945                     missing "":  0/49655
+
+              examples:  "COL5151"
+                         "ECU6186"
+                         "NIC6025"
+                         "PAR6132"
+
+-------------------------------------------------------------------------------------------------------
+idclass                                                                       Identificador de la clase
+-------------------------------------------------------------------------------------------------------
+
+                  type:  string (str6)
+
+         unique values:  999                      missing "":  0/49655
+
+              examples:  "602101"
+                         "606101"
+                         "611101"
+                         "615602"
+
+-------------------------------------------------------------------------------------------------------
+idstud                                                                          ID unico del estudiante
+-------------------------------------------------------------------------------------------------------
+
+                  type:  string (str8)
+
+         unique values:  24880                    missing "":  0/49655
+
+              examples:  "60210115"
+                         "60610121"
+                         "61110127"
+                         "61560225"
+
+-------------------------------------------------------------------------------------------------------
+sID                                                                   sID único del estudiante con pais
+-------------------------------------------------------------------------------------------------------
+
+                  type:  string (str11)
+
+         unique values:  49655                    missing "":  0/49655
+
+              examples:  "COL51510803"
+                         "ECU61860204"
+                         "NIC60250117"
+                         "PAR61320103"
+
+-------------------------------------------------------------------------------------------------------
+genero                                                                            Genero del estudiante
+-------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (byte)
+                 label:  genero
+
+                 range:  [0,1]                        units:  1
+         unique values:  2                        missing .:  0/49655
+
+            tabulation:  Freq.   Numeric  Label
+                         25002         0  Nino
+                         24653         1  Nina
+
+-------------------------------------------------------------------------------------------------------
+w2mat6                                                                     Peso del estudiante para PM6
+-------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (double)
+
+                 range:  [1.6722012,3670.7143]        units:  1.000e-09
+         unique values:  2735                     missing .:  0/49655
+
+                  mean:   179.218
+              std. dev:   337.047
+
+           percentiles:        10%       25%       50%       75%       90%
+                           14.9554   29.7237   63.2864   145.349   432.879
+
+-------------------------------------------------------------------------------------------------------
+hab_eqserce_mat6                                                     Habilidad equiparada con SERCE Mat
+-------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (double)
+
+                 range:  [-5.1791765,5.3708235]       units:  1.000e-10
+         unique values:  314                      missing .:  0/49655
+
+                  mean:  -.231372
+              std. dev:   .947961
+
+           percentiles:        10%       25%       50%       75%       90%
+                          -1.31918  -.879177  -.309177   .340823   .990823
+
+-------------------------------------------------------------------------------------------------------
+ptje_eqserce_mat6                                             Puntaje estándar equiparado con SERCE Mat
+-------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (double)
+
+                 range:  [175.18423,843.22058]        units:  1.000e-07
+         unique values:  290                      missing .:  0/49655
+
+                  mean:   523.456
+              std. dev:   97.7137
+
+           percentiles:        10%       25%       50%       75%       90%
+                           410.547   456.274    515.51    583.06    650.61
+
+-------------------------------------------------------------------------------------------------------
+nivel_mat6                                          Nivel proyectando puntos de corte SERCE matemáticas
+-------------------------------------------------------------------------------------------------------
+
+                  type:  string (str6)
+
+         unique values:  5                        missing "":  0/49655
+
+            tabulation:  Freq.  Value
+                           523  "Bajo I"
+                          5497  "I"
+                         18301  "II"
+                         17824  "III"
+                          7510  "IV"
+
+               warning:  variable has embedded blanks
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. ** Summarize
+.         sum idcntry  idstrat ///
+>         genero w2mat6 hab_eqserce_mat6 ptje_eqserce_mat6 
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+     idcntry |     49655    660.7257    1168.272         32       4841
+     idstrat |     49655     6.76806    2.544523          1         15
+      genero |     49655    .4964858    .4999927          0          1
+      w2mat6 |     49655    179.2179     337.047   1.672201   3670.714
+hab_eqserc~6 |     49655   -.2313723    .9479605  -5.179177   5.370823
+-------------+--------------------------------------------------------
+ptje_eqser~6 |     49655    523.4563    97.71368   175.1842   843.2206
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. ** Análisis finales
+. 
+.         tabstat ptje_eqserce_mat6 [w=w2mat6], s(mean min p25 p50 p75 max sd) by(country) 
+(analytic weights assumed)
+
+Summary for variables: ptje_eqserce_mat6
+     by categories of: country (Acronimo usado para el pais)
+
+country |      mean       min       p25       p50       p75       max        sd
+--------+----------------------------------------------------------------------
+    ARG |  530.2282  222.4464  474.9797  526.9413  583.0599  843.2206  85.57132
+    BRA |  519.6266  268.1726  464.5874  515.5098  566.4322  843.2206    82.267
+    CHI |  580.5083  268.1726  515.5098  573.7068  635.0215  843.2206  91.92932
+    COL |  514.6908  175.1842   462.509  510.3136  558.1183  843.2206  78.43331
+    CRI |  535.1889  295.1926  482.2544   530.059  583.0599  842.8679  77.01784
+    ECU |   513.123  246.3487  451.0774  510.3136  566.4322  843.2206  84.96546
+    GUA |   487.976  175.1842  435.4889  482.2544  533.1767  842.8679  78.66083
+    HON |  479.7886  219.3287   431.332  478.0974   530.059  843.2206  79.01592
+    MEX |  565.7664  271.2903  498.8821  563.3145  628.7861  843.2206  91.83234
+    NIC |  462.3148  175.1842  419.9004   462.509  501.9998  758.6901  68.29324
+    NVL |   586.679  249.4664  518.6275  579.9422  650.6099  843.2206  93.41948
+    PAN |  461.4825  175.1842  410.5474   462.509  510.3136  843.2206  78.27796
+    PAR |  455.5465  175.1842  399.1158  451.0774  510.3136  843.2206  88.92901
+    PER |  527.2497  175.1842  456.2736  518.6275  591.3737  843.2206  104.4008
+    RDO |  436.8544  175.1842  388.7235  435.4889  481.2151  757.6508  70.34726
+    URU |  566.5663  246.3487  493.6859  563.3145  631.9038  843.2206  102.0097
+--------+----------------------------------------------------------------------
+  Total |  531.5048  175.1842  467.7051  526.9413  591.3737  843.2206  92.42549
+-------------------------------------------------------------------------------
+
+. 
+.         tabstat ptje_eqserce_mat6 [w=w2mat6], s(mean min p25 p50 p75 max sd) by(nivel)
+(analytic weights assumed)
+
+Summary for variables: ptje_eqserce_mat6
+     by categories of: nivel_mat6 (Nivel proyectando puntos de corte SERCE matemáticas)
+
+nivel_mat6 |      mean       min       p25       p50       p75       max        sd
+-----------+----------------------------------------------------------------------
+    Bajo I |   283.295  175.1842  271.2903  300.3888  305.5849  308.7026  31.25546
+         I |  383.7686   314.938  365.8604   386.645  407.4297  412.6258  24.86245
+        II |  470.8085  414.7043  448.9989  474.9797  495.7644  512.3921  26.82932
+       III |  562.4414  514.4706  533.1767  558.1183  589.2953  620.4722  31.17312
+        IV |  680.3444  624.6291  641.2569  669.3161  701.5323  843.2206  49.21826
+-----------+----------------------------------------------------------------------
+     Total |  531.5048  175.1842  467.7051  526.9413  591.3737  843.2206  92.42549
+----------------------------------------------------------------------------------
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. ** Kernel para 5 valores plausibles
+. 
+.         kdensity ptje_eqserce_mat6, normal ///
+>                 title("Puntaje estándar equiparado con SERCE")
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. 
+.         tabstat ptje_eqserce_mat6 [w=w2mat6], s(mean min p25 p50 p75 max sd) ///
+>         by(country) col(stat) f(%9.5g) 
+(analytic weights assumed)
+
+Summary for variables: ptje_eqserce_mat6
+     by categories of: country (Acronimo usado para el pais)
+
+country |      mean       min       p25       p50       p75       max        sd
+--------+----------------------------------------------------------------------
+    ARG |    530.23    222.45    474.98    526.94    583.06    843.22    85.571
+    BRA |    519.63    268.17    464.59    515.51    566.43    843.22    82.267
+    CHI |    580.51    268.17    515.51    573.71    635.02    843.22    91.929
+    COL |    514.69    175.18    462.51    510.31    558.12    843.22    78.433
+    CRI |    535.19    295.19    482.25    530.06    583.06    842.87    77.018
+    ECU |    513.12    246.35    451.08    510.31    566.43    843.22    84.965
+    GUA |    487.98    175.18    435.49    482.25    533.18    842.87    78.661
+    HON |    479.79    219.33    431.33     478.1    530.06    843.22    79.016
+    MEX |    565.77    271.29    498.88    563.31    628.79    843.22    91.832
+    NIC |    462.31    175.18     419.9    462.51       502    758.69    68.293
+    NVL |    586.68    249.47    518.63    579.94    650.61    843.22    93.419
+    PAN |    461.48    175.18    410.55    462.51    510.31    843.22    78.278
+    PAR |    455.55    175.18    399.12    451.08    510.31    843.22    88.929
+    PER |    527.25    175.18    456.27    518.63    591.37    843.22     104.4
+    RDO |    436.85    175.18    388.72    435.49    481.22    757.65    70.347
+    URU |    566.57    246.35    493.69    563.31     631.9    843.22    102.01
+--------+----------------------------------------------------------------------
+  Total |     531.5    175.18    467.71    526.94    591.37    843.22    92.425
+-------------------------------------------------------------------------------
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. 
+.         graph hbar (mean) ptje_eqserce_mat [w=w2mat6], over(country, ///
+>         sort(ptje_eqserce_mat6) descending)stack ///
+>         title( "Resultados matemmática tercer grado" ) ///
+>         subtitle(" ") note("Fuente:  UNESCO, Resultados TERCE 2014", span)
+(analytic weights assumed)
+
+.                                         
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. 
+.         graph hbar (mean) ptje_eqserce_mat [w=w2mat6], over(country, ///
+>         sort(ptje_eqserce_mat6) descending)stack ///
+>         title( "Resultados matemática sexto grado" ) ///
+>         subtitle(" ") note("Fuente:  UNESCO, Resultados TERCE 2014", span)
+(analytic weights assumed)
+
+.                                         
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+.                                         
+.         save logfile.log, replace
+file logfile.log saved
+
+.         save PM6.dta, replace
+file PM6.dta saved
+
+. 
+end of do-file
+
+. save "PM6.dta", replace
+file PM6.dta saved
+
+. save "PM6.dta", replace
+file PM6.dta saved
+
+. exit, clear

@@ -1,0 +1,543 @@
+-------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\Adriana\Desktop\Bases4dic\Basescomparar\read_PM3.log
+  log type:  text
+ opened on:  26 Nov 2014, 22:20:19
+
+. use PM3.dta, clear
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. 
+. **Para cambiar las variables de mayuscula a minuscula pero con nombres de variables combinadas 
+. foreach v of varlist _all  {
+  2.       local lowname=lower("`v'")
+  3.       capture rename `v' `lowname'
+  4. }
+
+. 
+.         tab idcntry
+
+    idcntry |      Freq.     Percent        Cum.
+------------+-----------------------------------
+         32 |      2,608        6.03        6.03
+         76 |      2,412        5.58       11.61
+        152 |      3,110        7.19       18.80
+        170 |      2,869        6.63       25.43
+        188 |      2,551        5.90       31.33
+        214 |      2,254        5.21       36.54
+        218 |      3,461        8.00       44.54
+        320 |      3,152        7.29       51.82
+        340 |      2,717        6.28       58.11
+        484 |      2,493        5.76       63.87
+        558 |      2,670        6.17       70.04
+        591 |      2,400        5.55       75.59
+        600 |      2,144        4.96       80.55
+        604 |      3,451        7.98       88.52
+        858 |      1,925        4.45       92.97
+       4841 |      3,039        7.03      100.00
+------------+-----------------------------------
+      Total |     43,256      100.00
+
+.         
+.         ** internos
+.         rename  pais country
+
+.         tostring  idstud, replace
+idstud was long now str8
+
+.         gen idclass= substr(idstud, 1, 6)
+
+.         rename estrato idstrat
+
+.         rename nina genero
+
+.         rename  hab_eqserce_lec hab_eqserce_lec3
+variable hab_eqserce_lec not found
+r(111);
+
+end of do-file
+
+r(111);
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+.         rename  hab_eqserce_mat hab_eqserce_mat3
+
+.         rename  ptje_eqserce_mat  ptje_eqserce_mat3
+
+.         rename nivel nivel_mat3
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+.         
+.         tab country
+
+    country |      Freq.     Percent        Cum.
+------------+-----------------------------------
+        ARG |      2,608        6.03        6.03
+        BRA |      2,412        5.58       11.61
+        CHI |      3,110        7.19       18.80
+        COL |      2,869        6.63       25.43
+        CRI |      2,551        5.90       31.33
+        ECU |      3,461        8.00       39.33
+        GUA |      3,152        7.29       46.61
+        HON |      2,717        6.28       52.89
+        MEX |      2,493        5.76       58.66
+        NIC |      2,670        6.17       64.83
+        NVL |      3,039        7.03       71.86
+        PAN |      2,400        5.55       77.40
+        PAR |      2,144        4.96       82.36
+        PER |      3,451        7.98       90.34
+        RDO |      2,254        5.21       95.55
+        URU |      1,925        4.45      100.00
+------------+-----------------------------------
+      Total |     43,256      100.00
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. ** Se genera el identicador único para manejo en la BDD regional
+.         tostring  idstud, replace
+idstud already string; no replace
+
+.         gen sID= country+ idstud
+
+. 
+. ** Verificar que no existan registros duplicados por estudiante y país
+.         duplicates report sID
+
+Duplicates in terms of sID
+
+--------------------------------------
+   copies | observations       surplus
+----------+---------------------------
+        1 |        43256             0
+--------------------------------------
+
+.         tostring  idschool, replace
+idschool was int now str4
+
+.         gen oID= country+ idschool
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. 
+.         label variable idcntry "Identificador del pais"
+
+.         label variable country "Acronimo usado para el pais"
+
+.         label variable idstud  "ID unico del estudiante"
+
+.         label variable sID "sID único del estudiante con pais"
+
+.         label variable oID "oID acronimo pais mas escuela"
+
+.         label variable idschool "Identificador de la escuela"
+
+.         label variable idclass "Identificador de la clase"
+
+.         label variable idstrat "Identificador del estrato"
+
+.         label variable  w2mat3  "Peso del estudiante para PM3"
+
+.         label variable  ptje_eqserce_mat3 "Puntaje estándar equiparado con SERCE Mat"
+
+.         label variable  hab_eqserce_mat3 "Habilidad equiparada con SERCE Mat"
+
+.         label variable nivel_mat3 "Nivel proyectando puntos de corte SERCE matemáticas"
+
+.         label variable genero "Genero del estudiante"
+
+.         label define genero 1"Nina"0"Nino" 
+
+.         label values genero genero
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. 
+.         order  idcntry country idschool idstrat  oID idclass  idstud sID  ///
+>         genero w2mat3 hab_eqserce_mat3 ptje_eqserce_mat3 nivel
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. 
+.         codebook  idcntry country idschool idstrat  oID idclass  idstud sID  ///
+>         genero w2mat3 hab_eqserce_mat3 ptje_eqserce_mat3 nivel
+
+-------------------------------------------------------------------------------------------------------
+idcntry                                                                          Identificador del pais
+-------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (int)
+
+                 range:  [32,4841]                    units:  1
+         unique values:  16                       missing .:  0/43256
+
+                  mean:   664.074
+              std. dev:   1168.02
+
+           percentiles:        10%       25%       50%       75%       90%
+                                76       170       320       591       858
+
+-------------------------------------------------------------------------------------------------------
+country                                                                     Acronimo usado para el pais
+-------------------------------------------------------------------------------------------------------
+
+                  type:  string (str3)
+
+         unique values:  16                       missing "":  0/43256
+
+              examples:  "COL"
+                         "GUA"
+                         "NIC"
+                         "PAR"
+
+-------------------------------------------------------------------------------------------------------
+idschool                                                                    Identificador de la escuela
+-------------------------------------------------------------------------------------------------------
+
+                  type:  string (str4)
+
+         unique values:  539                      missing "":  0/43256
+
+              examples:  "3025"
+                         "3067"
+                         "3117"
+                         "3160"
+
+-------------------------------------------------------------------------------------------------------
+idstrat                                                                       Identificador del estrato
+-------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (byte)
+
+                 range:  [1,15]                       units:  1
+         unique values:  14                       missing .:  0/43256
+
+                  mean:   6.41469
+              std. dev:   2.68704
+
+           percentiles:        10%       25%       50%       75%       90%
+                                 3         5         6         8        10
+
+-------------------------------------------------------------------------------------------------------
+oID                                                                       oID acronimo pais mas escuela
+-------------------------------------------------------------------------------------------------------
+
+                  type:  string (str7)
+
+         unique values:  3060                     missing "":  0/43256
+
+              examples:  "COL1157"
+                         "GUA3022"
+                         "NIC3052"
+                         "PAR3130"
+
+-------------------------------------------------------------------------------------------------------
+idclass                                                                       Identificador de la clase
+-------------------------------------------------------------------------------------------------------
+
+                  type:  string (str6)
+
+         unique values:  999                      missing "":  0/43256
+
+              examples:  "302501"
+                         "306701"
+                         "311701"
+                         "316001"
+
+-------------------------------------------------------------------------------------------------------
+idstud                                                                          ID unico del estudiante
+-------------------------------------------------------------------------------------------------------
+
+                  type:  string (str8)
+
+         unique values:  22031                    missing "":  0/43256
+
+              examples:  "30250129"
+                         "30670133"
+                         "31170122"
+                         "31600137"
+
+-------------------------------------------------------------------------------------------------------
+sID                                                                   sID único del estudiante con pais
+-------------------------------------------------------------------------------------------------------
+
+                  type:  string (str11)
+
+         unique values:  43256                    missing "":  0/43256
+
+              examples:  "COL11570220"
+                         "GUA30220219"
+                         "NIC30520307"
+                         "PAR31300209"
+
+-------------------------------------------------------------------------------------------------------
+genero                                                                            Genero del estudiante
+-------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (byte)
+                 label:  genero
+
+                 range:  [0,1]                        units:  1
+         unique values:  2                        missing .:  0/43256
+
+            tabulation:  Freq.   Numeric  Label
+                         21824         0  Nino
+                         21432         1  Nina
+
+-------------------------------------------------------------------------------------------------------
+w2mat3                                                                     Peso del estudiante para PM3
+-------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (double)
+
+                 range:  [1.7953949,8390.5231]        units:  1.000e-09
+         unique values:  2834                     missing .:  0/43256
+
+                  mean:   202.925
+              std. dev:   361.705
+
+           percentiles:        10%       25%       50%       75%       90%
+                           17.6587    35.393   74.6136   178.274   509.493
+
+-------------------------------------------------------------------------------------------------------
+hab_eqserce_mat3                                                     Habilidad equiparada con SERCE Mat
+-------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (double)
+
+                 range:  [-3.7897345,4.3602655]       units:  1.000e-11
+         unique values:  231                      missing .:  0/43256
+
+                  mean:  -.053117
+              std. dev:   1.03714
+
+           percentiles:        10%       25%       50%       75%       90%
+                          -1.34973  -.779735  -.049735   .680265   1.25027
+
+-------------------------------------------------------------------------------------------------------
+ptje_eqserce_mat3                                             Puntaje estándar equiparado con SERCE Mat
+-------------------------------------------------------------------------------------------------------
+
+                  type:  numeric (double)
+
+                 range:  [232.44653,815.91622]        units:  1.000e-07
+         unique values:  230                      missing .:  0/43256
+
+                  mean:   531.075
+              std. dev:   82.8574
+
+           percentiles:        10%       25%       50%       75%       90%
+                           427.456   473.011   531.354   589.697   635.252
+
+-------------------------------------------------------------------------------------------------------
+nivel_mat3                                          Nivel proyectando puntos de corte SERCE matemáticas
+-------------------------------------------------------------------------------------------------------
+
+                  type:  string (str6)
+
+         unique values:  5                        missing "":  0/43256
+
+            tabulation:  Freq.  Value
+                          1695  "Bajo I"
+                         12167  "I"
+                         14266  "II"
+                          9104  "III"
+                          6024  "IV"
+
+               warning:  variable has embedded blanks
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. ** Summarize
+.         sum idcntry  idstrat ///
+>         genero w2mat3 hab_eqserce_mat3 ptje_eqserce_mat3 
+
+    Variable |       Obs        Mean    Std. Dev.       Min        Max
+-------------+--------------------------------------------------------
+     idcntry |     43256    664.0745    1168.023         32       4841
+     idstrat |     43256    6.414694    2.687041          1         15
+      genero |     43256    .4954688    .4999852          0          1
+      w2mat3 |     43256    202.9254    361.7046   1.795395   8390.523
+hab_eqserc~3 |     43256   -.0531167    1.037138  -3.789735   4.360265
+-------------+--------------------------------------------------------
+ptje_eqser~3 |     43256     531.075    82.85739   232.4465   815.9162
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. 
+.         tabstat ptje_eqserce_mat3 [w=w2mat3], s(mean min p25 p50 p75 max sd) by(country) 
+(analytic weights assumed)
+
+Summary for variables: ptje_eqserce_mat3
+     by categories of: country (Acronimo usado para el pais)
+
+country |      mean       min       p25       p50       p75       max        sd
+--------+----------------------------------------------------------------------
+    ARG |  533.2556  249.2301  484.9992  536.9484  589.6967   815.076  79.71091
+    BRA |  539.5435  232.4465  484.9992  538.5468  592.0944  815.9162  85.12592
+    CHI |  582.4443  324.3565  532.9523  581.7045  632.8544   815.076  73.70491
+    COL |  518.8835  249.2301  466.6172  516.9679   564.921  815.9162  74.51136
+    CRI |  557.5212  359.5221  516.1687  556.1296  597.6889   815.076   66.8733
+    ECU |  524.1681  242.8364  469.8141  519.3656  572.9131  815.9162  79.25692
+    GUA |   500.691  232.4465  453.0305  498.5859   546.539  787.9026  74.16613
+    HON |  507.5235  258.8207  453.0305  504.1804  555.3304  787.9026  77.92156
+    MEX |  549.2599  242.8364  498.5859  555.3304   594.492  815.9162  79.51251
+    NIC |  484.6988  232.4465  440.2431  484.9992  531.3538  787.9026  70.23994
+    NVL |  561.0847  295.5847  507.3773  560.9249  612.0748   815.076  77.77992
+    PAN |  494.1505  242.8364  445.0384  490.5937  540.1452  787.9026  75.10397
+    PAR |  487.8379  232.4465  434.6485  484.9992   539.346  810.2807  85.09406
+    PER |  532.7432  232.4465  481.0031  536.9484  589.6967   815.076  80.39048
+    RDO |  448.0252  232.4465  396.2861  445.0384  490.5937  750.3394  72.83801
+    URU |  550.5477  261.2184  490.5937  553.7319  609.6771   815.076   85.7788
+--------+----------------------------------------------------------------------
+  Total |  533.9989  232.4465  481.0031  536.9484  589.6967  815.9162  82.66967
+-------------------------------------------------------------------------------
+
+. 
+.         tabstat ptje_eqserce_mat3 [w=w2mat3], s(mean min p25 p50 p75 max sd) by(nivel)
+(analytic weights assumed)
+
+Summary for variables: ptje_eqserce_mat3
+     by categories of: nivel_mat3 (Nivel proyectando puntos de corte SERCE matemáticas)
+
+nivel_mat3 |      mean       min       p25       p50       p75       max        sd
+-----------+----------------------------------------------------------------------
+    Bajo I |  356.3799  232.4465  346.7346  365.1166  377.9041  389.8924  33.54806
+         I |   451.005  393.0892  434.6485   454.629   473.011  488.9953  27.34909
+        II |  527.0634  490.5937  507.3773  523.3617  540.1452   557.728   19.9576
+       III |  587.6698  560.9249  573.7124  589.6967  597.6889  619.2677  16.41218
+        IV |  666.0637  622.4646  633.6537  657.6302  685.6028  815.9162  39.38133
+-----------+----------------------------------------------------------------------
+     Total |  533.9989  232.4465  481.0031  536.9484  589.6967  815.9162  82.66967
+----------------------------------------------------------------------------------
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. 
+.         kdensity ptje_eqserce_lec3, normal ///
+>                 title("Puntaje estándar equiparado con SERCE")
+variable ptje_eqserce_lec3 not found
+r(111);
+
+end of do-file
+
+r(111);
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. ** Kernel para 5 valores plausibles
+. 
+.         kdensity ptje_eqserce_mat3, normal ///
+>                 title("Puntaje estándar equiparado con SERCE")
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. 
+.         tabstat ptje_eqserce_mat3 [w=w2mat3], s(mean min p25 p50 p75 max sd) ///
+>         by(country) col(stat) f(%9.5g) 
+(analytic weights assumed)
+
+Summary for variables: ptje_eqserce_mat3
+     by categories of: country (Acronimo usado para el pais)
+
+country |      mean       min       p25       p50       p75       max        sd
+--------+----------------------------------------------------------------------
+    ARG |    533.26    249.23       485    536.95     589.7    815.08    79.711
+    BRA |    539.54    232.45       485    538.55    592.09    815.92    85.126
+    CHI |    582.44    324.36    532.95     581.7    632.85    815.08    73.705
+    COL |    518.88    249.23    466.62    516.97    564.92    815.92    74.511
+    CRI |    557.52    359.52    516.17    556.13    597.69    815.08    66.873
+    ECU |    524.17    242.84    469.81    519.37    572.91    815.92    79.257
+    GUA |    500.69    232.45    453.03    498.59    546.54     787.9    74.166
+    HON |    507.52    258.82    453.03    504.18    555.33     787.9    77.922
+    MEX |    549.26    242.84    498.59    555.33    594.49    815.92    79.513
+    NIC |     484.7    232.45    440.24       485    531.35     787.9     70.24
+    NVL |    561.08    295.58    507.38    560.92    612.07    815.08     77.78
+    PAN |    494.15    242.84    445.04    490.59    540.15     787.9    75.104
+    PAR |    487.84    232.45    434.65       485    539.35    810.28    85.094
+    PER |    532.74    232.45       481    536.95     589.7    815.08     80.39
+    RDO |    448.03    232.45    396.29    445.04    490.59    750.34    72.838
+    URU |    550.55    261.22    490.59    553.73    609.68    815.08    85.779
+--------+----------------------------------------------------------------------
+  Total |       534    232.45       481    536.95     589.7    815.92     82.67
+-------------------------------------------------------------------------------
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. 
+.         graph hbar (mean) ptje_eqserce_mat3 [w=w2mat3], over(country, ///
+>         sort(ptje_eqserce_mat3) descending)stack ///
+>         title( "Resultados matemmática tercer grado" ) ///
+>         subtitle(" ") note("Fuente:  UNESCO, Resultados TERCE 2014", span)
+(analytic weights assumed)
+
+.                                         
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+. 
+.         graph hbar (mean) ptje_eqserce_mat3 [w=w2mat3], over(country, ///
+>         sort(ptje_eqserce_mat3) descending)stack ///
+>         title( "Resultados matemática tercer grado" ) ///
+>         subtitle(" ") note("Fuente:  UNESCO, Resultados TERCE 2014", span)
+(analytic weights assumed)
+
+. 
+end of do-file
+
+. do "C:\Users\Adriana\AppData\Local\Temp\STD0g000000.tmp"
+
+.         save logfile.log, replace
+(note: file logfile.log not found)
+file logfile.log saved
+
+.         save PM3.dta, replace
+file PM3.dta saved
+
+. 
+end of do-file
+
+. save "PM3.dta", replace
+file PM3.dta saved
+
+. save "PM3.dta", replace
+file PM3.dta saved
+
+. exit, clear
